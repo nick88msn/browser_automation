@@ -1,2 +1,4 @@
 download/*
 secrets.py
+.DS_Store
+chromedriver.*
