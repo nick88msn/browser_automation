@@ -15,6 +15,8 @@ DOWNLOAD_FOLDER = '/path/to/Download/foklder/'
 WEBSITE_TO_SCRAPE = 'https://example.com/'
 '''
 
+DOM_WAIT_TIME = 10  # seconds
+
 def clean_download_dir():
     for f in os.listdir(secrets.DOWNLOAD_FOLDER):
         os.remove(os.path.join(secrets.DOWNLOAD_FOLDER,f))
@@ -32,9 +34,12 @@ def setup_chromedriver():
     browser = webdriver.Chrome(options=chrome_options, executable_path=PATH)
     return browser
 
+def wait_dom_to_load(browser, seconds):
+    browser.implicitly_wait(seconds) # seconds
+
 def go_to_homepage(browser):
     browser.get(secrets.WEBSITE_TO_SCRAPE)
-    browser.implicitly_wait(10) # seconds
+    wait_dom_to_load(browser, DOM_WAIT_TIME)
 
 def login(browser):
     user_form = browser.find_element_by_id('j_username')
@@ -42,24 +47,24 @@ def login(browser):
     pw_form = browser.find_element_by_id('j_password')
     pw_form.send_keys(secrets.PASSWORD)
     pw_form.send_keys(Keys.RETURN)
-    browser.implicitly_wait(5)
+    wait_dom_to_load(browser, DOM_WAIT_TIME)
 
 def select_project(browser):
     browser.find_element_by_css_selector('#listaPratiche').click()
-    browser.implicitly_wait(5)
+    wait_dom_to_load(browser, DOM_WAIT_TIME)
 
 def select_documents(browser):
     browser.find_element_by_css_selector('#menuPratica').click()
-    browser.implicitly_wait(10)
+    wait_dom_to_load(browser, DOM_WAIT_TIME)
     browser.find_element_by_css_selector('#contextMenu > li:nth-child(2)').click()
-    browser.implicitly_wait(10)
+    wait_dom_to_load(browser, DOM_WAIT_TIME)
     browser.find_element_by_css_selector('#funzione28').click()
     browser.find_element_by_css_selector('#ui-id-2').click()
-    browser.implicitly_wait(10)
+    wait_dom_to_load(browser, DOM_WAIT_TIME)
 
 def get_all_documents(browser):
     rows = browser.find_elements_by_css_selector('.zebra')
-    browser.implicitly_wait(10)
+    wait_dom_to_load(browser, DOM_WAIT_TIME)
     return rows
 
 def create_folder_structure(row, row_count):
